@@ -24,14 +24,27 @@ class DDP {
      */
     run(debug = true) {
         this.debug = debug;
+        var $this = this
         return new Promise((resolve, reject) => {
             if (this.links.length == 0) {
                 reject('Empty links');
                 return;
             }
 
+            if (!fs.existsSync(this.outdir)) {
+                fs.mkdirSync(this.outdir)
+            }
+
+            if (!fs.existsSync(`${this.outdir}/HTML/`)) {
+                fs.mkdirSync(`${this.outdir}/HTML/`)
+            }
+
+            if (!fs.existsSync(`${this.outdir}/Corrected/`)) {
+                fs.mkdirSync(`${this.outdir}/Corrected/`)
+            }
+
             var index = 0;
-            this.loader(this.links, index, this.loader, resolve, reject)
+            this.loader(this.links, index, this.loader, resolve, reject, $this)
         })
     }
 
@@ -43,24 +56,14 @@ class DDP {
      * @param {Function} resolve 
      * @param {Function} reject 
      */
-    loader(links, index, callback, resolve, reject) {
-        var $this = this;
+    loader(links, index, callback, resolve, reject, $this) {
+        var outdir = $this.outdir;
         if (links.length > 0 && links[index] == undefined) {
             resolve('done');
         }
+
         rp(links[index])
             .then(function (htmlString) {
-                if (!fs.existsSync(outdir)) {
-                    fs.mkdirSync(outdir)
-                }
-
-                if (!fs.existsSync(`${outdir}/HTML/`)) {
-                    fs.mkdirSync(`${outdir}/HTML/`)
-                }
-
-                if (!fs.existsSync(`${outdir}/Corrected/`)) {
-                    fs.mkdirSync(`${outdir}/Corrected/`)
-                }
 
                 fs.writeFileSync(`${outdir}/HTML/${$this.prefix}${index}.html`, htmlString);
                 var $ = cheerio.load(htmlString);
@@ -76,7 +79,7 @@ class DDP {
                 if ($this.debug) {
                     console.log('Осталось', links.length - index);
                 }
-                callback(links, index + 1, callback, resolve, reject)
+                callback(links, index + 1, callback, resolve, reject, $this)
             })
             .catch((err) => reject(err));
     }
