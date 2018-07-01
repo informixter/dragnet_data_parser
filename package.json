@@ -1,6 +1,6 @@
 {
   "name": "dragnet_data_parser",
-  "version": "0.0.1",
+  "version": "0.1.1",
   "description": "npm package parsing and save data for https://github.com/seomoz/dragnet_data",
   "main": "index.js",
   "scripts": {
