@@ -3,12 +3,12 @@ npm package parsing and save data for https://github.com/seomoz/dragnet_data
 
 ## Installation
 
-  `npm install @informix/dragnet_data_parser`
+  `npm i dragnet_data_parser`
 
 ## Usage
 
 ```javascript
-var ddp = require("async");
+var ddp = require("dragnet_data_parser");
 var links = [
     "http://newssite.com/news1.html",
     "http://newssite.com/news2.html",
